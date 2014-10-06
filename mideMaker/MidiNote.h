@@ -19,6 +19,9 @@
 }
 @property Byte channelNo;
 
++(NSArray*)MidiNoteArrayMakerForChannel:(Byte)cn NumberedMusicialNotation:(NSString*)mmn;
+-(id)initWithCode:(Byte)code Type:(unsigned int)type Length:(unsigned int)len Channel:(Byte)channelNo;
+
 +(NSArray*)MidiNoteArrayMaker:(NSArray*)noteDetailArray;
 +(NSArray*)MidiNoteArrayMaker:(NSArray*)noteDetailArray ofChannel:(Byte)channelNo;
 

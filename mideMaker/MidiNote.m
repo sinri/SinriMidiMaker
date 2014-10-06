@@ -12,6 +12,152 @@
 
 @implementation MidiNote
 
++(NSArray*)MidiNoteArrayMakerForChannel:(Byte)cn NumberedMusicialNotation:(NSString*)mmn{
+    NSString * target=[mmn stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSArray*array=[target componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    NSMutableArray * ma=[[NSMutableArray alloc]init];
+    
+    Byte baseCode=60;//C5
+    
+    BOOL isInCycle=NO;
+    NSMutableArray * cycle_ma=[[NSMutableArray alloc]init];
+    
+    for (NSString* mnote in array) {
+        NSString * mn=[mnote stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if(![mn isEqualToString:@""] && ![mn isEqualToString:@"|"]){
+//            NSLog(@"MN = %@",mn);
+            
+            if([mn hasPrefix:@"|:"]){
+                isInCycle=YES;
+                continue;
+            }else if([mn hasPrefix:@":|"]){
+                isInCycle=NO;
+                [ma addObjectsFromArray:cycle_ma];
+                [ma addObjectsFromArray:cycle_ma];
+                cycle_ma=[[NSMutableArray alloc]init];
+                if([mn hasSuffix:@"||"]){
+                    break;
+                }else{
+                    continue;
+                }
+            }
+            
+            if([mn hasSuffix:@"||"]){
+                break;
+            }
+            
+            if ([mn hasPrefix:@"1="]) {
+                if([mn length]>2){
+                    
+                    NSString*t2=[mn substringWithRange:NSMakeRange(2, 1)];
+                    if([t2 isEqualToString:@"b"]){
+                        //flat
+                        baseCode-=1;
+                    }else if([t2 isEqualToString:@"#"]){
+                        //sharp
+                        baseCode+=1;
+                    }
+                    if([mn length]>3){
+                        t2=[mn substringWithRange:NSMakeRange(3, 1)];
+                    }
+                    if([t2 isEqualToString:@"C"] || [t2 isEqualToString:@"c"]){
+                        baseCode+=0;
+                    }else if([t2 isEqualToString:@"D"] || [t2 isEqualToString:@"d"]){
+                        baseCode+=2;
+                    }else if([t2 isEqualToString:@"E"] || [t2 isEqualToString:@"e"]){
+                        baseCode+=4;
+                    }else if([t2 isEqualToString:@"F"] || [t2 isEqualToString:@"f"]){
+                        baseCode+=5;
+                    }else if([t2 isEqualToString:@"G"] || [t2 isEqualToString:@"g"]){
+                        baseCode+=7;
+                    }else if([t2 isEqualToString:@"A"] || [t2 isEqualToString:@"a"]){
+                        baseCode+=9;
+                    }else if([t2 isEqualToString:@"B"] || [t2 isEqualToString:@"b"]){
+                        baseCode+=11;
+                    }
+                }
+            }else{
+                Byte code=baseCode;
+                unsigned int type=4;
+                unsigned int len=1;
+                NSArray*charArray=[MidiDataHelper charArrayFromString:mn];
+                int state=-1;
+                for (NSString*onechar in charArray) {
+                    if(state==-1){
+                        if([onechar isEqualToString:@"-"]){
+                            code-=12;
+                        }else if([onechar isEqualToString:@"+"]){
+                            code+=12;
+                        }else{
+                            state=0;
+                        }
+                    }
+                    if(state==0){
+                        if([onechar isEqualToString:@"b"]){
+                            code-=1;
+                        }else if([onechar isEqualToString:@"#"]){
+                            code+=1;
+                        }else if([onechar isEqualToString:@"0"]){
+                            code=0xFF;
+                        }else if([onechar isEqualToString:@"1"]){
+                            code+=0;
+                        }else if([onechar isEqualToString:@"2"]){
+                            code+=2;
+                        }else if([onechar isEqualToString:@"3"]){
+                            code+=4;
+                        }else if([onechar isEqualToString:@"4"]){
+                            code+=5;
+                        }else if([onechar isEqualToString:@"5"]){
+                            code+=7;
+                        }else if([onechar isEqualToString:@"6"]){
+                            code+=9;
+                        }else if([onechar isEqualToString:@"7"]){
+                            code+=11;
+                        }else{
+                            state=1;
+                        }
+                    }
+                    if(state==1){
+                        if([onechar isEqualToString:@"_"]){
+                            type<<=1;
+                        }else if([onechar isEqualToString:@"-"]){
+                            len+=1;
+                        }else if([onechar isEqualToString:@"="]){
+                            type=3;
+                            len=1;
+                        }else if([onechar isEqualToString:@"."]){
+                            type<<=1;
+                            len*=3;
+                        }
+                    }
+                }
+                MidiNote * thenote=[[MidiNote alloc]initWithCode:code Type:type Length:len Channel:cn];
+                if(isInCycle){
+                    [cycle_ma addObject:thenote];
+//                    NSLog(@"add in cycle: %@",mn);
+                }else{
+                    [ma addObject:thenote];
+//                    NSLog(@"add in main: %@",mn);
+                }
+            }  
+        }
+    }
+    
+    return ma;
+}
+
+-(id)initWithCode:(Byte)code Type:(unsigned int)type Length:(unsigned int)len Channel:(Byte)channelNo{
+    self=[super init];
+    if(self){
+        noteCode=code;
+        noteType=type;
+        noteLength=len;
+        _channelNo=channelNo;
+    }
+    return self;
+}
+
 +(NSArray*)MidiNoteArrayMaker:(NSArray*)noteDetailArray{
     return [MidiNote MidiNoteArrayMaker:noteDetailArray ofChannel:0];
 }

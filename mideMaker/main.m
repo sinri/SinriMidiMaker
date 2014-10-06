@@ -34,13 +34,20 @@ int main(int argc, const char * argv[])
         
         MidiTrace * mt=[[MidiTrace alloc]init];
         
-        NSString*MidiNoteSerials=@"E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4*. D4*8 D4*2 \
-        E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*. C4*8 C4*2 \
-        D4 D4 E4 C4 D4 E4*8 F4*8 E4 C4 D4 E4*8 F4*8 E4 D4 C4 D4 G3*2 \
-        E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*. C4*8 C4*2 ";
-        MidiNoteSerials=[MidiNoteSerials stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//        NSString*MidiNoteSerials=@"E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4*. D4*8 D4*2 \
+//        E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*. C4*8 C4*2 \
+//        D4 D4 E4 C4 D4 E4*8 F4*8 E4 C4 D4 E4*8 F4*8 E4 D4 C4 D4 G3*2 \
+//        E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*. C4*8 C4*2 ";
+//        MidiNoteSerials=[MidiNoteSerials stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//        [mt setNoteArray:[[MidiNote MidiNoteArrayMaker:[MidiNoteSerials componentsSeparatedByCharactersInSet:([NSCharacterSet whitespaceAndNewlineCharacterSet])]]mutableCopy]];
         
-        [mt setNoteArray:[[MidiNote MidiNoteArrayMaker:[MidiNoteSerials componentsSeparatedByCharactersInSet:([NSCharacterSet whitespaceAndNewlineCharacterSet])]]mutableCopy]];
+        NSString * numberedNotes=@"1=C \
+        3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 3. 2_ 2- | \
+        3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 2. 1_ 1- | \
+        2 2 3 1 | 2 3_ 4_ 3 1 | 2 3_ 4_ 3 2 | 1 2 -5- | \
+        3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 2. 1_ 1- | \
+        |: 1 3 5 1 :||";
+        [mt setNoteArray:[[MidiNote MidiNoteArrayMakerForChannel:0 NumberedMusicialNotation:numberedNotes]mutableCopy]];
 
         [mw.traceArray addObject:mt];
         
