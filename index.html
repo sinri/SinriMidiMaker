@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>SinriMidiMaker by sinri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">SinriMidiMaker</h1>
+      <h2 class="project-tagline">A Midi File Maker For Amateur Musician and so on. Designed for Local Church Hymnal Service.</h2>
+      <a href="https://github.com/sinri/SinriMidiMaker" class="btn">View on GitHub</a>
+      <a href="https://github.com/sinri/SinriMidiMaker/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sinri/SinriMidiMaker/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="sinrimidimaker" class="anchor" href="#sinrimidimaker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SinriMidiMaker</h1>
+
+<p>A Midi File Maker For Amateur Musician and so on. Designed for Local Church Hymnal Service.</p>
+
+<p>Midi is a good music media format, as it could be written without any professional device while any melody could be presented. Given the keyboard, tempo and note serials, the Sinri Midi Maker will do the next for you, to generate a Midi file.</p>
+
+<p>It is made for Objective-C platform on OS X and iOS, relesed under GNU GPL v3.0. It could be used with Fundation Library directly, by including the h and m files except main. I think it is convinent to turn it into pure C or C++, or any other languages :P</p>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h1>
+
+<h2>
+<a id="properties" class="anchor" href="#properties" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Properties</h2>
+
+<p>Midi file might be of 3 types, Single Trace, Synchronized Traces and Asynchronized Traces. To simplize the implementation, only Synchronized Traces type was implemented.</p>
+
+<p>Default Settings have been included. However, you can still modify Midi Trace Name, Tempo, Time Signature, and Key Signature if needed. For details, view <a href="http://www.everstray.com/news/news.php?NEWS_NAME=20141004115454%5BMidi%20File%20Format%20Details%5DEverstray.log">Midi File Format Details</a>.</p>
+
+<h2>
+<a id="numbered-musical-notation" class="anchor" href="#numbered-musical-notation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Numbered Musical Notation</h2>
+
+<p>You can use a string of numbers and symbols to describe a score. </p>
+
+<p>Btw, it is the real object of mine to make up the things. The hymn book used by Local Church in China Mainland is generally printed with Numbered Musical Notation. A great sample is <code>XB (选本诗歌)</code>.</p>
+
+<h3>
+<a id="key" class="anchor" href="#key" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Key</h3>
+
+<p>Key is optional for the display of the scores, in the format of <code>1=[b#][CDEFGAB]</code>. Default is C5.</p>
+
+<h3>
+<a id="bar-and-cycle-and-end" class="anchor" href="#bar-and-cycle-and-end" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bar and Cycle and End</h3>
+
+<p>Use <code>bar (|)</code> to make the notes clear for reading.</p>
+
+<p>Use <code>Cycle Start (|:)</code> to begin a cycle, and use <code>Cycle End (:|)</code> to end a cycle. The note serials included in the cycle would be repeated once more.</p>
+
+<p>Use <code>Score End (||)</code> to end the score, no matter whether any more characters after it. If the Score End is also the Cycle End, use <code>Cycle-Score End (:||)</code> to save time.</p>
+
+<h3>
+<a id="note" class="anchor" href="#note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Note</h3>
+
+<p>The note format is <code>(0|[\-\+]*[b#]?[1234567])[\-_]*.?</code>.</p>
+
+<p>Zero is for rest.
+One is equal to the set Key, from 2 to 7 is floating with their relative location on piano keyboard, the same rule for flat or sharp. One plus and minus before the number is for lifting or falling one octave.</p>
+
+<p>The <code>underline (_)</code> is to half the note length, while the <code>hyphen (-)</code> is to twice the length of the note. The <code>dot (.)</code> is make the length once and a half. For one third of note, use <code>equal (=)</code>.</p>
+
+<p>Give some samples.</p>
+
+<p>When <code>1=C</code> was set,</p>
+
+<p><code>1</code> is C5, <code>2</code> is D5, <code>b2</code> is bD5, they are all quarter of note.</p>
+
+<p>And <code>1_</code> is one eighth of note, <code>1-</code> is one second of note. </p>
+
+<p>For one third of note, use <code>1=</code>. </p>
+
+<h2>
+<a id="standard-notation" class="anchor" href="#standard-notation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Standard Notation</h2>
+
+<p>The Note should match the following regular pattern.</p>
+
+<pre><code>[b#]?[ABCDEFGabcdefg0](10|[0123456789])(\*(\.|1|2|3|4|8|16|32|64)(\*(([0123456789]+)|\.))?)?
+</code></pre>
+
+<p>Generally the note detail is consisted of three parts seperated by a star (*), first for Key, second for Type, and third for Length.</p>
+
+<h3>
+<a id="key-1" class="anchor" href="#key-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Key</h3>
+
+<p>Key is not optional.</p>
+
+<p>Any key on a standard piano keyboard could be represented by a code, in readable format such as "D4". If it should be a flat or sharp note, put a "b" or "#" before the normal note code, such as "bD4" and "#D4".</p>
+
+<p>Commonly, C5 is linked to the middle C.</p>
+
+<p>For rest, give a zero, i.e. "0".</p>
+
+<h3>
+<a id="type" class="anchor" href="#type" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Type</h3>
+
+<p>Type is optional, default as 4, which means quarter note. The value for this field could be a number or a point ("."). </p>
+
+<p><strong>Number</strong> Totally 1, 2, 3, 4, 8, 16, 32 and 64 are supported, to presenting the 1/x type note, i.e. one for a whole note, two for a half, etc.</p>
+
+<p><strong>Point</strong> Point means "plus half". When a point comes out here, comes out with one and a half quarter note. Note that if the Length is set, the affect is equals to number 4.</p>
+
+<h3>
+<a id="length" class="anchor" href="#length" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Length</h3>
+
+<p>Type is optional, and only available when Type is set. Default value is 1, and the value could be any plus integer or a point. For example with a quarter note, length of 1 keeps it as long as a quarter, but length of 2 makes it as long as twice, equals to a half. A point would make the length of the target note as one and a half times of the set type in Type section.</p>
+
+<h2>
+<a id="sample-1-numbered" class="anchor" href="#sample-1-numbered" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample 1: Numbered</h2>
+
+<p>In the main.m in the project, a sapmle note serails of XB129 [Ode An die Freude].</p>
+
+<pre><code>1=C 
+3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 3. 2_ 2- | 
+3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 2. 1_ 1- | 
+2 2 3 1 | 2 3_ 4_ 3 1 | 2 3_ 4_ 3 2 | 1 2 -5- | 
+3 3 4 5 | 5 4 3 2 | 1 1 2 3 | 2. 1_ 1- | 
+|: 1 3 5 1 :||
+</code></pre>
+
+<p>With the default settings, comes out with the following data for file.</p>
+
+<pre><code>4d546864 00000006 00010002 01e04d54 726b0000 003d00ff 030ce980 89e69cac 313239e9 a69600ff 02105369 6e726920 4d696469 204d616b 657200ff 51030783 0000ff58 04040218 0800ff59 02000000 ff2f004d 54726b00 00028600 ff200100 00b00a40 00c00100 90407883 60804000 00904078 83608040 00009041 78836080 41000090 43788360 80430000 90437883 60804300 00904178 83608041 00009040 78836080 40000090 3e788360 803e0000 903c7883 60803c00 00903c78 8360803c 0000903e 78836080 3e000090 40788360 80400000 90407885 50804000 00903e78 8170803e 0000903e 78874080 3e000090 40788360 80400000 90407883 60804000 00904178 83608041 00009043 78836080 43000090 43788360 80430000 90417883 60804100 00904078 83608040 0000903e 78836080 3e000090 3c788360 803c0000 903c7883 60803c00 00903e78 8360803e 00009040 78836080 40000090 3e788550 803e0000 903c7881 70803c00 00903c78 8740803c 0000903e 78836080 3e000090 3e788360 803e0000 90407883 60804000 00903c78 8360803c 0000903e 78836080 3e000090 40788170 80400000 90417881 70804100 00904078 83608040 0000903c 78836080 3c000090 3e788360 803e0000 90407881 70804000 00904178 81708041 00009040 78836080 40000090 3e788360 803e0000 903c7883 60803c00 00903e78 8360803e 00009037 78874080 37000090 40788360 80400000 90407883 60804000 00904178 83608041 00009043 78836080 43000090 43788360 80430000 90417883 60804100 00904078 83608040 0000903e 78836080 3e000090 3c788360 803c0000 903c7883 60803c00 00903e78 8360803e 00009040 78836080 40000090 3e788550 803e0000 903c7881 70803c00 00903c78 8740803c 0000903c 78836080 3c000090 40788360 80400000 90437883 60804300 00903c78 8360803c 0000903c 78836080 3c000090 40788360 80400000 90437883 60804300 00903c78 8360803c 0000ff2f 00
+</code></pre>
+
+<h2>
+<a id="sample-2-standard" class="anchor" href="#sample-2-standard" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample 2: Standard</h2>
+
+<p>In the main.m in the project, a sapmle note serails of XB129 [Ode An die Freude].</p>
+
+<pre><code>E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4*. D4*8 D4*2 
+E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*. C4*8 C4*2 
+D4 D4 E4 C4 D4 E4*8 F4*8 E4 C4 D4 E4*8 F4*8 E4 D4 C4 D4 G3*2 
+E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*. C4*8 C4*2 
+</code></pre>
+
+<p>With the default settings, comes out with the following data for file.</p>
+
+<pre><code>4d546864 00000006 00010002 01e04d54 726b0000 003d00ff 030ce980 89e69cac 313239e9 a69600ff 02105369 6e726920 4d696469 204d616b 657200ff 51030783 0000ff58 04040218 0800ff59 02000000 ff2f004d 54726b00 00023e00 ff200100 00b00a40 00c00100 90347883 60803400 00903478 83608034 00009035 78836080 35000090 37788360 80370000 90377883 60803700 00903578 83608035 00009034 78836080 34000090 32788360 80320000 90307883 60803000 00903078 83608030 00009032 78836080 32000090 34788360 80340000 90347885 50803400 00903278 81708032 00009032 78874080 32000090 34788360 80340000 90347883 60803400 00903578 83608035 00009037 78836080 37000090 37788360 80370000 90357883 60803500 00903478 83608034 00009032 78836080 32000090 30788360 80300000 90307883 60803000 00903278 83608032 00009034 78836080 34000090 32788550 80320000 90307881 70803000 00903078 87408030 00009032 78836080 32000090 32788360 80320000 90347883 60803400 00903078 83608030 00009032 78836080 32000090 34788170 80340000 90357881 70803500 00903478 83608034 00009030 78836080 30000090 32788360 80320000 90347881 70803400 00903578 81708035 00009034 78836080 34000090 32788360 80320000 90307883 60803000 00903278 83608032 0000902b 78874080 2b000090 34788360 80340000 90347883 60803400 00903578 83608035 00009037 78836080 37000090 37788360 80370000 90357883 60803500 00903478 83608034 00009032 78836080 32000090 30788360 80300000 90307883 60803000 00903278 83608032 00009034 78836080 34000090 32788550 80320000 90307881 70803000 00903078 87408030 0000ff2f 00
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sinri/SinriMidiMaker">SinriMidiMaker</a> is maintained by <a href="https://github.com/sinri">sinri</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
